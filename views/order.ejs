@@ -1,0 +1,89 @@
+<link rel="stylesheet" href="css/style.css" />
+<div class="row">
+	<div class="col-md-12">
+		<div class="buttons">
+			<button type="button" class="btn btn-success col-sm-1" id="addDiv">
+				+
+			</button>
+			<button type="button" class="btn btn-danger col-sm-1" id="removeDiv">
+				-
+			</button>
+		</div>
+		<form id="formOne">
+			<div class="form-group row">
+				<input
+					type="text"
+					class="form-control col-sm-6"
+					placeholder="Medicine name"
+					id="medicine"
+				/>
+				<input
+					type="text"
+					class="form-control col-sm-3"
+					placeholder="Quantity"
+				/>
+				<!-- <button type="button" class="btn btn-success col-sm-1" id="add">
+					+
+				</button>
+				<button type="button" class="btn btn-danger col-sm-1">-</button> -->
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="js/orderScript.js"></script>
+
+<script>
+	$(document).ready(function () {
+		$('#medicine').autocomplete({
+			source: async function (request, response) {
+				let data = await fetch(
+					`http://localhost/3000/search?term=${request.query.term}`
+				)
+					.then((results) => results.json())
+					.then((results) =>
+						results.map((result) => {
+							return {
+								label: result.name,
+								value: result.name,
+								id: result._id,
+							};
+						})
+					);
+				response(data);
+			},
+			minLength: 2,
+			select: function (event, ui) {
+				console.log(ui.item);
+			},
+		});
+	});
+</script>
+
+<!-- 
+<script>
+	$(function () {
+		$('#medicine').autocomplete({
+			source: function (request, response) {
+				$.ajax({
+					url: 'search/',
+					dataType: 'jsonp',
+					type: 'GET',
+					data: request,
+					success: function (data) {
+						response(data);
+					},
+					error: function (err) {
+						console.log(err.status);
+					},
+				});
+			},
+			minLength: 1,
+			select: function (event, ui) {
+				if (ui.item) {
+					$('#medicine').text(ui.item.label);
+				}
+			},
+		});
+	});
+</script> -->
